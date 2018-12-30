@@ -99,7 +99,7 @@ def iterative_train_test_split(X, y, test_size):
 
 
 
-def _fold_tie_break(desired_samples_per_fold, M):
+def _fold_tie_break(desired_samples_per_fold, M, random_state):
     """Helper function to split a tie between folds with same desirability of a given sample
 
     Parameters
@@ -114,6 +114,10 @@ def _fold_tie_break(desired_samples_per_fold, M):
     fold_number : int
         The selected fold index to put samples into
     """
+    print(random_state)
+    print(check_random_state(random_state))
+    # np.random.seed(random_state)
+
     if len(M) == 1:
         return M[0]
     else:
@@ -178,6 +182,7 @@ class IterativeStratification(_BaseKFold):
 
     def __init__(self, n_splits=3, order=1, sample_distribution_per_fold = None, random_state=None):
         self.order = order
+        print("IS init random_state:", random_state)
         super(
             IterativeStratification,
             self).__init__(n_splits,
@@ -283,7 +288,8 @@ class IterativeStratification(_BaseKFold):
                 max_val = max(self.desired_samples_per_combination_per_fold[l])
                 M = np.where(
                     np.array(self.desired_samples_per_combination_per_fold[l]) == max_val)[0]
-                m = _fold_tie_break(self.desired_samples_per_combination_per_fold[l], M)
+                m = _fold_tie_break(self.desired_samples_per_combination_per_fold[l], M,
+                        self.random_state)
                 folds[m].append(row)
                 rows_used[row] = True
                 for i in per_row_combinations[row]:
@@ -300,6 +306,10 @@ class IterativeStratification(_BaseKFold):
         For params, see documentation of :code:`self._prepare_stratification`. Does not return anything,
         modifies params.
         """
+        print(self.random_state)
+        print(check_random_state(self.random_state))
+        # np.random.seed(self.random_state)
+
         available_samples = [
             i for i, v in rows_used.items() if not v]
         samples_left = len(available_samples)
