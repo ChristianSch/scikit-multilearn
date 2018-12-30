@@ -116,7 +116,7 @@ def _fold_tie_break(desired_samples_per_fold, M, random_state):
     """
     print(random_state)
     print(check_random_state(random_state))
-    # np.random.seed(random_state)
+    np.random.seed(random_state)
 
     if len(M) == 1:
         return M[0]
@@ -308,7 +308,7 @@ class IterativeStratification(_BaseKFold):
         """
         print(self.random_state)
         print(check_random_state(self.random_state))
-        # np.random.seed(self.random_state)
+        np.random.seed(self.random_state)
 
         available_samples = [
             i for i, v in rows_used.items() if not v]
