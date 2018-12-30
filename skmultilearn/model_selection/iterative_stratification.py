@@ -114,9 +114,7 @@ def _fold_tie_break(desired_samples_per_fold, M, random_state):
     fold_number : int
         The selected fold index to put samples into
     """
-    print(random_state)
-    print(check_random_state(random_state))
-    np.random.seed(random_state)
+    rand_state = check_random_state(random_state)
 
     if len(M) == 1:
         return M[0]
@@ -125,7 +123,7 @@ def _fold_tie_break(desired_samples_per_fold, M, random_state):
         M_prim = np.where(
             np.array(desired_samples_per_fold) == max_val)[0]
         M_prim = np.array([x for x in M_prim if x in M])
-        return np.random.choice(M_prim, 1)[0]
+        return rand_state.choice(M_prim, 1)[0]
 
 
 def _get_most_desired_combination(samples_with_combination):
@@ -307,8 +305,7 @@ class IterativeStratification(_BaseKFold):
         modifies params.
         """
         print(self.random_state)
-        print(check_random_state(self.random_state))
-        np.random.seed(self.random_state)
+        rand_state = check_random_state(self.random_state)
 
         available_samples = [
             i for i, v in rows_used.items() if not v]
@@ -318,7 +315,7 @@ class IterativeStratification(_BaseKFold):
             row = available_samples.pop()
             rows_used[row] = True
             samples_left -= 1
-            fold_selected = np.random.choice(np.where(self.desired_samples_per_fold > 0)[0], 1)[0]
+            fold_selected = rand_state.choice(np.where(self.desired_samples_per_fold > 0)[0], 1)[0]
             self.desired_samples_per_fold[fold_selected] -= 1
             folds[fold_selected].append(row)
 
